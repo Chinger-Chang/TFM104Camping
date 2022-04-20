@@ -1,0 +1,129 @@
+﻿
+<div id="c1" class="container">
+	<div class="row">
+		<div>
+			<label for="selected" class="col-sm-2 col-form-label">選擇露營區</label>
+			<select v-model="selected" v-on:change="getmore">
+				<option v-for="n in nameList" v-bind:value="n.id">{{ n.name }}</option>
+
+			</select>
+			<p>
+				Count: {{ selected }}
+			</p>
+		</div>
+
+		<div class="col-4">
+			<div class="card" style="width: 18rem;" id="productList.camping_AreaId">
+				<img class="card-img-top" v-bind:src="productList.camping_Area_Path" alt="Card image cap">
+				<div class="card-body">
+					<h5 class="card-title">露營區名稱: {{productList.camping_Area_Name}}</h5>
+					<h5 class="card-title" v-if="productList.isAudit ===true">已審核</h5>
+					<h5 class="card-title" v-else>審核中</h5>
+					<a href="#" class="btn btn-primary" v-on:click="editcamping">編輯露營區</a>
+					<button class="btn-danger" v-on:click="deletecamping">刪除</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-4" v-for="(item,index) of productList.myrooms">
+			<div class="card" style="width: 18rem;" :id="item.roomId">
+				<img class="card-img-top" v-bind:src="item.room_Path" alt="Card image cap">
+				<div class="card-body">
+					<h5 class="card-title">房間名稱: {{item.roomName}}</h5>
+					<h5 class="card-title">房間數量:{{ item.roomCount}}</h5>
+					<a href="#" class="btn btn-primary" v-on:click="editroom(index)">編輯房型</a>
+					<button class="btn-danger"  v-on:click="deleteroom(index)">刪除</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<button v-on:click="addroom">新增房型</button>
+	<button v-on:click="addcamping_area">新增露營區</button>
+</div>
+
+
+		<script>
+			var app = new Vue({
+				el: '#c1',
+				data: {
+					selected: '',
+					productList: {},
+					nameList: {}
+				},
+				methods: {
+					getmore: function () {
+						var self = this;
+						productList = {};
+						axios.get("/Camping_Information/GetAllInformation/" + this.selected).then(function (res) {
+							self.productList = res.data;
+							console.log(self.productList);
+						})
+					},
+
+					addroom: function () {
+						window.location.href = "/Create_Room/CreateRoom/" + this.selected;
+					},
+
+					addcamping_area: function () {
+						window.location.href = "/Create_Camping_Area/Campingarea";
+
+					},
+					deletecamping: function (a) {
+						var self = this;
+						axios.post("/Camping_Information/DeleteCamping/" + self.productList.camping_AreaId).then(function (res) {
+							if (res.data == true) {
+								alert("刪成功!!!")
+								window.location.reload();
+							}
+							else {
+								alert("刪失敗!!!")
+							}
+						});
+					},
+					deleteroom: function (a) {
+						var self = this;
+						axios.post("/Camping_Information/DeleteRoom/" + self.productList.myrooms[a].roomId).then(function (res) {
+							if (res.data == true) {
+								alert("刪成功!!!")
+								window.location.reload();
+							}
+							else {
+								alert("刪失敗!!!")
+							}
+						});
+					}, 
+					editcamping: function () {
+						//var self = this;
+						window.location.href = "/Edit_Camping_Area/EditCamping_Area";
+					},
+					editroom: function (a) {
+						var self = this;
+						window.location.href = "/Edit_Room/EditRoom/" + self.productList.myrooms[a].roomId;
+					}
+
+				},
+				mounted:function() {
+						var self = this;
+					axios.get("/Camping_Information/GetAllCamping_Area").then(function (res) {
+						self.nameList = res.data;
+						console.log("111" + self.selected);
+						axios.get("/Camping_Information/GetAllInformation/" + self.selected).then(function (res) {
+							self.productList = res.data;
+							console.log(self.productList);
+							console.log("222" + self.selected);
+						});
+					});
+					
+					}
+					//getfirst: function () {
+					//	var self = this;
+					//	axios.get("/Camping_Information/GetFirstInformation/").then(function (res) {
+					//		self.productList = res.data;
+					//		console.log(self.productList);
+					//		self.number = self.productList.roomName.length;
+					//	})
+					//}
+				//}
+			});
+		</script>
+

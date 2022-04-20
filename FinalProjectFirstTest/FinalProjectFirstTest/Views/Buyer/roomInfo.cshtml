@@ -1,0 +1,88 @@
+﻿<div id="mika">
+    <div v-for="x in RoomInfo.cApicPath">
+        <div>
+            <img :src="'/Camping_Area_Picture/'+ x" class="img-thumbnail" alt="...">
+            @*<p>{{x}}</p>*@
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">概述</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">服務設施 <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">房型</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">退房</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div>
+        <lable>電話 : {{RoomInfo.cAphone}}</lable>
+    </div>
+    <div>
+        <lable>地址 : {{RoomInfo.cAaddress}}</lable>
+    </div>
+
+    <div class="form-group">
+        <label for="exampleFormControlTextarea1">概述</label>
+        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3">{{RoomInfo.cAdescription}}</textarea>
+    </div>
+
+    @*<label>服務設施</label>
+        <ul class="list-group list-group-horizontal-sm">
+            <li v-show="RoomInfo.wifi" class="list-group-item">wifi</li>
+            <li v-show="RoomInfo.breakfast" class="list-group-item">breakfast</li>
+        </ul>*@
+    <label>服務設施</label>
+    <ul v-for="(x,key) in RoomInfo" class="list-group list-group-horizontal-sm">
+        <li v-show="x == true" class="list-group-item">{{key}}</li>
+    </ul>
+    @*key：如果是陣列則為該迭代的索引位置，如果是物件則為該迭代的物件屬性*@
+
+    <div v-for="x in RoomInfo.rooms" class="card" style="width: 18rem;">
+        <img :src="'/Room_Picture/'+ x.room_Path" class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">{{x.roomName}}</h5>
+            <h5 class="card-title">{{x.roomType}}</h5>
+            <p class="card-text">每晚價格 : {{x.priceOfWeekDay}}</p>
+            @*<p>{{x.room_Path}}</p>*@
+            <a href="#" class="btn btn-primary">訂房去!!</a>
+        </div>
+    </div>
+    @*<p>{{RoomInfo}}</p>
+    <p>{{RoomInfo.rooms}}</p>
+    <p>{{RoomInfo.rooms[0]}}</p>
+    <p>{{RoomInfo.rooms[0].roomId}}</p>*@
+
+
+</div>
+
+
+<script>
+    var a = new Vue({
+        el: '#mika',
+        data: {
+            RoomInfo: [],
+        },
+        methods: {
+
+
+        },
+        mounted: function () {
+            var self = this;
+            axios.get("/Buyer/getRoomInfo").then(function (res) {
+                self.RoomInfo = res.data;
+                console.log(res.data);
+            })
+        }
+    });
+</script>

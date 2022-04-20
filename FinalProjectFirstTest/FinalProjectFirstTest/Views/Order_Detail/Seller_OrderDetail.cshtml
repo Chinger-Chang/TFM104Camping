@@ -1,0 +1,154 @@
+﻿<div id="mika">
+	<ul class="nav nav-tabs" id="myTab" role="tablist">
+		<li class="nav-item" role="presentation">
+			<a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">訂單</a>
+		</li>
+		<li class="nav-item" role="presentation">
+			<a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">歷史訂單</a>
+		</li>
+	</ul>
+	<div class="tab-content" id="myTabContent">
+		<div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th scope="col">露營區</th>
+						<th scope="col">房型</th>
+						<th scope="col">訂購人</th>
+						<th scope="col">電話</th>
+						<th scope="col">入住時間</th>
+						<th scope="col">退房時間</th>
+						<th scope="col">價錢</th>
+						<th scope="col">狀態</th>
+						<th scope="col">取消</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for=" (item,index) in OrderDetailsList">
+						<td>{{item.campingAreaName}}</td>
+						<td>{{item.roomType}}</td>
+						<td>{{item.name}}</td>
+						<td>{{item.phone}}</td>
+						<td>{{item.checkInDate}}</td>
+						<td>{{item.checkOutDate}}</td>
+						<td>{{item.price}}</td>
+						<td>{{item.status}}</td>
+						<td>
+							<button v-show="item.status == '已付款'" v-on:click="cancle(index)" type="button" class="btn btn-danger" data-toggle="modal" data-target="#staticBackdrop">
+								取消訂單
+							</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th scope="col">露營區</th>
+						<th scope="col">房型</th>
+						<th scope="col">訂購人</th>
+						<th scope="col">電話</th>
+						<th scope="col">入住時間</th>
+						<th scope="col">退房時間</th>
+						<th scope="col">價錢</th>
+						<th scope="col">狀態</th>
+						<th scope="col">取消時間</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(item,index) in CancelOrderDetailsList">
+						<td>{{item.campingAreaName}}</td>
+						<td>{{item.roomType}}</td>
+						<td>{{item.name}}</td>
+						<td>{{item.phone}}</td>
+						<td>{{item.checkInDate}}</td>
+						<td>{{item.checkOutDate}}</td>
+						<td>{{item.price}}</td>
+						<td>{{item.status}}</td>
+						<td>{{item.cancelDate}}</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+
+	<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="staticBackdropLabel">確定取消??</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					取消就救不回來了:)
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+					<button v-on:click="sendodID" type="button" class="btn btn-primary">確定</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+    var a = new Vue({
+        el: '#mika',
+        data: {
+			OrderDetailsList: {},
+			CancelOrderDetailsList: {},
+			
+				odID: 0
+			
+        },
+        methods: {
+            cancle: function (a) {
+                let self = this;
+				self.odID = self.OrderDetailsList[a].orderDetailId;
+				console.log(self.odID);
+            },
+			sendodID: function () {
+				console.log("aaa");
+                let self = this;
+                //POST請求
+                axios({
+                    method: 'post',
+					url: '/Order_Detail/Delete_Order_Detail',
+					data: self.odID,
+                    headers: { "Content-Type": 'application/json' }
+                })
+                    .then(function (response) {
+                        if (response.data == true) {
+                            alert("傳入成功");
+                            window.location.reload();
+
+                        } else {
+                            alert("取消失敗");
+                        }
+                    })
+                    .catch(function (response) {
+                        //handle error
+                        console.log(response.data);
+                       // window.location.href = response.data
+                    });
+            }
+        },
+        mounted: function () {
+            var self = this;
+			axios.get("/Order_Detail/Get_Order_Details").then(function (res) {
+				self.OrderDetailsList = res.data;
+				console.log(res.data);
+				
+			});
+			axios.get("/Order_Detail/Get_Cancel_Order_Details").then(function (res) {
+					self.CancelOrderDetailsList = res.data;
+					console.log(res.data);
+				});
+        }
+    });
+</script>
