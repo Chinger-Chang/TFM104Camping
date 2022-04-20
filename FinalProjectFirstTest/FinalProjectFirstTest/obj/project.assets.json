@@ -7311,11 +7311,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\user\\Downloads\\FinalProjectFirstTest\\FinalProjectFirstTest\\FinalProjectFirstTest.csproj",
+      "projectUniqueName": "C:\\Users\\user\\Desktop\\TFM104Camping\\FinalProjectFirstTest\\FinalProjectFirstTest\\FinalProjectFirstTest.csproj",
       "projectName": "FinalProjectFirstTest",
-      "projectPath": "C:\\Users\\user\\Downloads\\FinalProjectFirstTest\\FinalProjectFirstTest\\FinalProjectFirstTest.csproj",
+      "projectPath": "C:\\Users\\user\\Desktop\\TFM104Camping\\FinalProjectFirstTest\\FinalProjectFirstTest\\FinalProjectFirstTest.csproj",
       "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\user\\Downloads\\FinalProjectFirstTest\\FinalProjectFirstTest\\obj\\",
+      "outputPath": "C:\\Users\\user\\Desktop\\TFM104Camping\\FinalProjectFirstTest\\FinalProjectFirstTest\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
