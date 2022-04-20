@@ -197,7 +197,7 @@ namespace FinalProjectFirstTest.Controllers
                          RoomName = r.Name,
                          CheckInDate = od.StartDate.ToString("yyyy-MM-dd"),
                          CheckOutDate = od.EndDate.ToString("yyyy-MM-dd"),
-                         Price = CalPrice.calDaysPrice(od.StartDate, od.EndDate, r.Price_Of_Weekdays, r.Price_Of_Weekends),
+                         Price = CalPrice.CalDaysPrice(od.StartDate, od.EndDate, r.Price_Of_Weekdays, r.Price_Of_Weekends),
                          Status = od.Status.ToString()
                      }).ToList();
             return s;
@@ -217,7 +217,7 @@ namespace FinalProjectFirstTest.Controllers
                          RoomName = r.Name,
                          CheckInDate = od.StartDate.ToString("yyyy-MM-dd"),
                          CheckOutDate = od.EndDate.ToString("yyyy-MM-dd"),
-                         Price = CalPrice.calDaysPrice(od.StartDate, od.EndDate, r.Price_Of_Weekdays, r.Price_Of_Weekends),
+                         Price = CalPrice.CalDaysPrice(od.StartDate, od.EndDate, r.Price_Of_Weekdays, r.Price_Of_Weekends),
                          Status = od.Status.ToString(),
                          CancelDate = od.CancelDate.HasValue ? od.CancelDate.Value.ToString("yyyy-MM-dd") : ""
                      }).ToList();

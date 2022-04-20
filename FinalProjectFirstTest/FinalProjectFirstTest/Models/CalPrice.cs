@@ -7,7 +7,7 @@ namespace FinalProjectFirstTest.Models
 {
     public class CalPrice
     {
-        public static decimal calDaysPrice(DateTime beginDate, DateTime endDate, decimal moPrice, decimal holiPrice)
+        public static decimal CalDaysPrice(DateTime beginDate, DateTime endDate, decimal moPrice, decimal holiPrice)
         {
             var curDate = beginDate;
             decimal total = 0;
