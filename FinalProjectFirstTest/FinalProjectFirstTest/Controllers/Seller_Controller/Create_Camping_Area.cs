@@ -16,41 +16,41 @@ namespace CampingAreaTest330.Controllers
 		private readonly IWebHostEnvironment _environment;
 		private readonly FinalProjectDbContext _db;
 
-	public Create_Camping_AreaController(IWebHostEnvironment environment, FinalProjectDbContext db)
-	{
-		_environment = environment;
-		_db = db;
-	}
+		public Create_Camping_AreaController(IWebHostEnvironment environment, FinalProjectDbContext db)
+		{
+			_environment = environment;
+			_db = db;
+		}
 
 		public IActionResult CampingArea()
 		{
 			return View();
 		}
 
-	[HttpPost]
-	public Boolean Camping_Area_IntoDB(CampingAreaViewModel model)
-	
+		[HttpPost]
+		public Boolean Camping_Area_IntoDB(CampingAreaViewModel model)
+
 		{
-		int sellerid = 2;
-		var path = _environment.WebRootPath + "/Camping_Area_Picture";
-		var picsize = model.Path.Count;
-		var file = model.Path;
-		Console.WriteLine(model.Region);
-		//ProductType pt = (ProductType)Enum.Parse(typeof(ProductType),)
-		if (model != null)
-		{
+			var sellerid = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == "Seller_Id").Value);
+			var path = _environment.WebRootPath + "/Camping_Area_Picture";
+			var picsize = model.Path.Count;
+			var file = model.Path;
+			Console.WriteLine(model.Region);
+			//ProductType pt = (ProductType)Enum.Parse(typeof(ProductType),)
+			if (model != null)
+			{
 				var oo = new Camping_Area()
 				{
-						SellerId = sellerid,
-						Name = model.Name,
-						Phone = model.Phone,
-						Region = model.Region,
-						Address = model.Address,
-						//Path = fileName,
-						Description = model.Description,
-						IsAudit = true,
-						UpdateTime = DateTime.Now
-					};
+					SellerId = sellerid,
+					Name = model.Name,
+					Phone = model.Phone,
+					Region = model.Region,
+					Address = model.Address,
+					//Path = fileName,
+					Description = model.Description,
+					IsAudit = true,
+					UpdateTime = DateTime.Now
+				};
 				_db.Camping_Areas.Add(oo);
 				_db.SaveChanges();
 				var pp = new Service()
@@ -90,7 +90,7 @@ namespace CampingAreaTest330.Controllers
 							//還沒載完會卡住所以要copy
 							file[index].CopyTo(fs);
 						}
-						
+
 						_db.Camping_Area_Pictures.Add(new Camping_Area_Picture()
 						{
 							Camping_AreaId = oo.Id,
@@ -105,13 +105,13 @@ namespace CampingAreaTest330.Controllers
 				//}
 				HttpContext.Session.SetString("camping_area_id", oo.Id.ToString());
 				return true;
-		}
-		else
-		{
-			return false;
-		}
+			}
+			else
+			{
+				return false;
+			}
 
+		}
 	}
-}
-	
+
 }

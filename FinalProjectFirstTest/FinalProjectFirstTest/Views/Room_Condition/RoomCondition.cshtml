@@ -1,28 +1,26 @@
-﻿    
+﻿
 
 
-<div id="ab">
-	<div class="form-group row">
-		<label for="selected" class="col-sm-2 col-form-label">露營區</label>
+<div id="ab" class="container">
+	<div class="col-6 form-group mt-5 mr-3" style="display:inline-block ;text-align:right;">
+		<label for="selectcamp" class="form-label">露營區:</label>
 		<select v-model="selectcamp" v-on:change="getallroom">
 			<option value="" disabled selected>Select your option</option>
 			<option v-for="(item,index) of camplist.camping_Area_Name" v-bind:value="index">
 				{{ item }}
 			</option>
 		</select>
-		<span>Selected: {{ selectcamp }}</span>
 	</div>
-	<div class="form-group row">
-		<label for="selected" class="col-sm-2 col-form-label">房間</label>
+	<div class="col-6 form-group row mt-5" style="display:inline-block">
+		<label for="selectroom" class="form-label">房間:</label>
 		<select v-model="selectroom"  v-on:change="getroomcondition">
 			<option value="" disabled selected>Select your option</option>
 			<option v-for="(item,index) of roomlist.room_Name" v-bind:value="index">
 				{{ item }}
 			</option>
 		</select>
-		<span>Selected: {{ selectroom }}</span>
 	</div>
-	<div width="80%" id="calendar"></div>
+	<div class="border-dark" width="80%" id="calendar"></div>
 </div>
 
 
@@ -49,6 +47,7 @@ var a = new Vue({
 			axios.get("/Room_Condition/Get_Room/" + self.camplist.camping_AreaId[self.selectcamp]).then(function (res) {
 				self.roomlist = res.data;
 				console.log(res.data);
+				self.selectroom = "";
 
 
 			});
@@ -73,17 +72,21 @@ var a = new Vue({
                 console.log(self.totalamount);
 
 				TodayDate = new Date(self.getalldate[0]);
+				EndDate = new Date(self.getalldate[self.getalldate.length-1]);
 				console.log(TodayDate);
-				d = TodayDate.getDate();
-				m = TodayDate.getMonth();
+				
+				em = EndDate.getMonth();
+				d = TodayDate.getDate(); console.log(em);
+				m = TodayDate.getMonth(); console.log(m);
 				y = TodayDate.getFullYear();
 				ev = [];
 				console.log(d, m, y);
 				date = new Date(y, m, 1);
+				enddate = new Date(y, m, 1);
 				console.log(date);
 				dates = [];
 
-				while (date.getMonth() === m) {
+				while (date.getMonth() <= em) {
 					dates.push(new Date(date).toLocaleDateString('en-CA'));
 					date.setDate(date.getDate() + 1);
 				}

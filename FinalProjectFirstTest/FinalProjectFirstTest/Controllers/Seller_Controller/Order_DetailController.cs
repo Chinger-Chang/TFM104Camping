@@ -64,8 +64,8 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
 						 CheckInDate = od.StartDate.ToString("yyyy-MM-dd"),
 						 CheckOutDate = od.EndDate.ToString("yyyy-MM-dd"),
 						 Price = CalPrice.CalDaysPrice(od.StartDate, od.EndDate, r.Price_Of_Weekdays, r.Price_Of_Weekends),
-						 Status = od.Status.ToString(),
-						 RoomType = r.RoomType.ToString(),
+						 Status = od.Status.GetType().GetMember(od.Status.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName(),
+						 RoomType = r.RoomType.GetType().GetMember(r.RoomType.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName(),
 						 CampingAreaName = c.Name,
 						 CancelDate = od.CancelDate.HasValue ? od.CancelDate.Value.ToString("yyyy-MM-dd") : ""
 					 }).ToList();

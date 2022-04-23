@@ -36,15 +36,19 @@ namespace CampingAreaTest330.Controllers
 		[Route("[controller]/[action]/{id?}")]
 		public object GetAllInformation([FromRoute]int? id)
 		{
-
+			var sellerid = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == "Seller_Id").Value);
 			//string cid = "";
 			if (id == null)
 			{
 				if (HttpContext.Session.GetString("camping_area_id")==null)
 				{
-					var s = _db.Camping_Areas.Where(w => w.SellerId == 2).FirstOrDefault().Id;
+					var s = _db.Camping_Areas.Where(w => w.SellerId == sellerid).FirstOrDefault();
+					if(s == null)
+					{
+						return false;
+					}
 					//HttpContext.Session.SetString("camping_area_id", s.ToString());
-					id = s;
+					id = s.Id;
 				}
 				else
 				{
