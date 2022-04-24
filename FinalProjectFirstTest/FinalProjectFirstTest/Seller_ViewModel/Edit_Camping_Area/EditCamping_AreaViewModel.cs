@@ -27,6 +27,7 @@ namespace FinalProjectFirstTest.Seller_ViewModel.Edit_Camping_Area
 		public bool Canteen { get; set; }
 		public bool Mattress { get; set; }
 		public bool No_Equipment { get; set; }
+		public bool IsCancel { get; set; }
 	}
 	public class MyCampingArea
 	{

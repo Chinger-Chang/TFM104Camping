@@ -136,7 +136,9 @@ namespace FinalProjectFirstTest.Controllers
                 {
                     new Claim(ClaimTypes.Name,user.Name),
                     new Claim(ClaimTypes.Email,user.Email),
-                    new Claim("User_Id",user.Id.ToString())
+                    new Claim("User_Id",user.Id.ToString()),
+                    new Claim(ClaimTypes.Role,"User")
+
                 };
                 var claimIdentity = new ClaimsIdentity(claims,CookieAuthenticationDefaults.AuthenticationScheme);
                 var claimPrincipal = new ClaimsPrincipal(claimIdentity);

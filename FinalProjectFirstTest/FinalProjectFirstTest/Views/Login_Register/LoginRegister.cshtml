@@ -5,7 +5,7 @@
 		<div class="forms">
 			<div class="form-wrapper is-active">
 				<button type="button" class="switcher switcher-login">
-					買家登入
+					賣家登入
 					<span class="underline"></span>
 				</button>
 				<!--form登入-->
@@ -18,7 +18,7 @@
 							<label for="login-email">帳號(email)</label>
 
 
-							<input id="login-email" type="email" required v-model="loginemail" v-on:blur="LoginEmailCheck">
+							<input id="login-email" type="email" required v-model="loginemail">
 						</div>
 						<div class="input-block">
 							<i class="bi bi-lock"></i>
@@ -41,7 +41,7 @@
 			</div>
 			<div class="form-wrapper">
 				<button type="button" class="switcher switcher-signup">
-					買家註冊
+					賣家註冊
 					<span class="underline"></span>
 				</button>
 
@@ -159,24 +159,11 @@
 					headers: { "Content-Type": 'multipart/form-data' }
 				})
 					.then(function (response) {
-						//if (response.data == true) {
-						//    self.isLogin = true;
-						//    self.isFalse = false;
-						//    //alert("登入成功");
-						//} else {
-						//    self.isFalse = true;
-						//    self.isLogin = false;
-						//    self.LoginEmail = '';
-						//    self.LoginPassword = '';
-						//    //alert("登入失敗");
-						//}
-						//console.log(response);
-						//console.log(response.data);
+						alert(response.data);
 						window.location.href = response.data
 					})
 					.catch(function (response) {
-						//handle error
-						//console.log(response.data);
+						/*if (response.data === )*/
 						window.location.href = response.data
 					});
 			}

@@ -2,10 +2,10 @@
 <style>
 	.border-right {
 		border-style: solid;
-		color: #1520a1;
+		color: rgb(56 191 245 / 0.80);
 		height: 300px;
 		position: fixed;
-		border-width: 6px;
+		border-width: 3px;
 	}
 
 	.dot {
@@ -14,18 +14,30 @@
 		position: fixed;
 		text-align: center;
 	}
+
+	@@media (max-width:770px) and (min-width:481px) {
+		.myimg {
+			width: 200px !important;
+			height: 120px !important;
+		}
+	}
+
+	@@media (max-width:480px) {
+		.myimg {
+			width: 100px !important;
+			height: 60px !important;
+		}
+	}
 </style>
 
-<div class="float-right">
-	<div class="border-right "></div>
+<div class="float-right" style="display:flex;justify-content:center;">
+
+	<div class="border-right " style=";"></div>
 	<img src="~/test/tent2.png" class="dot">
-	@*<button class="dot btn-info"></button>*@
 	<p style="margin-top: 50px; position: fixed;">建露營區</p>
 	<img src="~/test/tent.png" class="dot" style="margin-top:125px">
-	@*<button class="dot btn-outline-info" style="margin-top:125px"></button>*@
 	<p style="margin-top: 175px; position: fixed;">建房型</p>
 	<img src="~/test/tent.png" class="dot" style="margin-top:250px">
-	@*<button class="dot btn-outline-info" style="margin-top:275px"></button>*@
 	<p style="margin-top: 300px; position: fixed;">完成</p>
 </div>
 <form id="form1" v-on:submit.prevent="send">
@@ -36,11 +48,11 @@
 			<div class="col-8 mx-auto my-2">
 				<div class="border p-5 shadow " style="background-color:#e6e4e4">
 					<div class="form-group row mb-4">
-						<label for="title" class="form-label">露營區名稱</label>
+						<label for="name" class="form-label">露營區名稱</label>
 						<input type="text" class="form-control" id="name" v-model="hello.name" required>
 					</div>
 					<div class="form-group row mb-4">
-						<label for="price" class="form-label">電話</label>
+						<label for="phone" class="form-label">電話</label>
 						<input type="tel" placeholder="0123-445-678" pattern="[0-9]{4}-[0-9]{3}-[0-9]{3}" required
 							   class="form-control" id="phone" v-model="hello.phone">
 					</div>
@@ -54,7 +66,7 @@
 						<!-- <span>Selected: {{ selected }}</span> -->
 					</div>
 					<div class="form-group row mb-4">
-						<label for="description" class="form-label">地址</label>
+						<label for="address" class="form-label">地址</label>
 						<input type="text" class="form-control" id="address" v-model="hello.address">
 					</div>
 					<div class="form-group row  mb-4">
@@ -67,10 +79,6 @@
 			<div class="col-8 mx-auto mt-2 mb-4">
 				<div class="border p-5 d-flex  mx-auto align-content-center shadow " style="background-color:#e6e4e4">
 					<div class="form-group row">
-						<div v-for="(value, key, index) in services" :key="index">
-							<input type="checkbox" :id="key">
-							<label :for="key">{{ key }} {{ value }}</label>
-						</div>
 						<ul>
 							<li>
 
@@ -212,21 +220,20 @@
 							<div class="container">
 								<div class=" mt-2 px-2 mx-auto " style="display:inline-block" v-for="item, index in picture.preview_list" :key="index">
 									<button type="button" class="btn btn-danger rounded" v-on:click="deletepreviewpic(index)" style="position: absolute;">X</button>
-									<img :src="item" style="width:290px; height: 180px; object-fit: cover;" />
+									<img :src="item" style="width:290px; height: 180px; object-fit: cover;" class="myimg" />
 								</div>
 							</div>
 						</template>
 					</div>
 				</div>
 			</div>
-
-
 		</div>
 	</div>
+	<div class="d-flex justify-content-end">
+		<button type="submit" class="btn btn-dark text-white btn-lg mb-5">新增</button>
+	</div>
 </form>
-<div class="d-flex justify-content-end">
-	<button type="submit" class="btn btn-dark text-white btn-lg mb-5">新增</button>
-</div>
+
 <script>
 	var app = new Vue(
 		{

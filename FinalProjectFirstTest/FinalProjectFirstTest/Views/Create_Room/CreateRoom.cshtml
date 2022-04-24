@@ -1,10 +1,10 @@
 ﻿<style>
 	.border-right {
 		border-style: solid;
-		color: #1520a1;
+		color: rgb(56 191 245 / 0.80);
 		height: 300px;
 		position: fixed;
-		border-width: 6px;
+		border-width: 3px;
 	}
 
 	.dot {
@@ -13,19 +13,33 @@
 		position: fixed;
 		text-align: center;
 	}
+
+	@@media (max-width:770px) and (min-width:481px) {
+		.myimg {
+			width: 200px !important;
+			height: 120px !important;
+		}
+	}
+
+	@@media (max-width:480px) {
+		.myimg {
+			width: 100px !important;
+			height: 60px !important;
+		}
+	}
 </style>
-<div class="float-right">
+
+<div class="float-right" style="display:flex;justify-content:center;">
+
 	<div class="border-right "></div>
-	<img src="~/test/tent.png" class="dot">
-	@*<button class="dot btn-info"></button>*@
+	<img src="~/test/tent2.png" class="dot">
 	<p style="margin-top: 50px; position: fixed;">建露營區</p>
 	<img src="~/test/tent2.png" class="dot" style="margin-top:125px">
-	@*<button class="dot btn-outline-info" style="margin-top:125px"></button>*@
 	<p style="margin-top: 175px; position: fixed;">建房型</p>
 	<img src="~/test/tent.png" class="dot" style="margin-top:250px">
-	@*<button class="dot btn-outline-info" style="margin-top:275px"></button>*@
 	<p style="margin-top: 300px; position: fixed;">完成</p>
 </div>
+
 <form id="form1" v-on:submit.prevent="send">
 	<div class="container">
 		<div class="row">
@@ -34,7 +48,7 @@
 			<div class="col-8 mx-auto my-2">
 				<div class="border p-5 shadow " style="background-color:#e6e4e4">
 					<div class=" form-group row mb-4">
-						<label for="title" class="form-label">房間名稱</label>
+						<label for="name" class="form-label">房間名稱</label>
 						<input type="text" class="form-control" id="name" v-model="hello.name" required>
 					</div>
 					<div class="form-group row mb-4">
@@ -84,7 +98,7 @@
 							<div class="container">
 								<div class=" mt-2 px-2 mx-auto" style="display:inline-block" v-for="item, index in picture.preview_list" :key="index">
 									<button type="button" class="btn btn-danger rounded" v-on:click="deletepreviewpic(index)" style="position: absolute;">x</button>
-									<img :src="item" style="width:290px; height: 180px; object-fit: cover;" />
+									<img :src="item" style="width:290px; height: 180px; object-fit: cover;" class="myimg" />
 								</div>
 							</div>
 						</template>
@@ -96,9 +110,76 @@
 		</div>
 	</div>
 	<div class="d-flex justify-content-end">
-	<button type="submit" class="btn btn-dark text-white btn-lg mt-5 mb-5">新增</button>
+		<button type="submit" class="btn btn-dark text-white btn-lg mt-5 mb-5">新增</button>
+	</div>
+</form>
+
+<div id="myModal" class="modal" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Modal title</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p>Modal body text goes here.</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+	</div>
 </div>
-</form>	<div id="myModal" class="modal" tabindex="-1">		<div class="modal-dialog">			<div class="modal-content">				<div class="modal-header">					<h5 class="modal-title">Modal title</h5>					<button type="button" class="close" data-dismiss="modal" aria-label="Close">						<span aria-hidden="true">&times;</span>					</button>				</div>				<div class="modal-body">					<p>Modal body text goes here.</p>				</div>				<div class="modal-footer">					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>					<button type="button" class="btn btn-primary">Save changes</button>				</div>			</div>		</div>	</div><script>	var app = new Vue(		{			el: "#form1",			data: {				hello: {					name: "",					priceofweekdays: "",					priceofweekends: "",					description: ""				},				picture: {					preview: null,					preview_list: [],					image_list: []				},				count: '1',				selected: 'Single_Room',				roomtypes: [					{ text: '單人房', value: 'Single_Room' },					{ text: '雙人房', value: 'Double_Room' },					{ text: '四人房', value: 'Quad_Room' },					{ text: '六人房', value: 'Six_Person_Room' },					{ text: '八人房', value: 'Eight_Person_Room' },					{ text: '十人房', value: 'Ten_Person_Room' },					{ text: '露營車(二人)', value: 'Campervan_2' },					{ text: '露營車(四人)', value: 'Campervan_4' },					{ text: '露營車(六人)', value: 'Campervan_6' },					{ text: '露營區(二人)', value: 'Campsite_2' },					{ text: '露營區(四人)', value: 'Campsite_4' },					{ text: '露營區(六人)', value: 'Campsite_6' },					{ text: '豪華露營(二人)', value: 'Glamping_2' },					{ text: '豪華露營(四人)', value: 'Glamping_4' },					{ text: '豪華露營(六人)', value: 'Glamping_6' }				]			},			methods: {				up: function (a) {					//console.log(a);					//console.log(a.target.files[0]);					var input = a.target;					var count = input.files.length;					var index = 0;					if (input.files) {
+
+
+
+<script>
+	var app = new Vue(
+		{
+			el: "#form1",
+			data: {
+				hello: {
+					name: "",
+					priceofweekdays: "",
+					priceofweekends: "",
+					description: ""
+				},
+				picture: {
+					preview: null,
+					preview_list: [],
+					image_list: []
+				},
+				count: '1',
+				selected: 'Single_Room',
+				roomtypes: [
+					{ text: '單人房', value: 'Single_Room' },
+					{ text: '雙人房', value: 'Double_Room' },
+					{ text: '四人房', value: 'Quad_Room' },
+					{ text: '六人房', value: 'Six_Person_Room' },
+					{ text: '八人房', value: 'Eight_Person_Room' },
+					{ text: '十人房', value: 'Ten_Person_Room' },
+					{ text: '露營車(二人)', value: 'Campervan_2' },
+					{ text: '露營車(四人)', value: 'Campervan_4' },
+					{ text: '露營車(六人)', value: 'Campervan_6' },
+					{ text: '露營區(二人)', value: 'Campsite_2' },
+					{ text: '露營區(四人)', value: 'Campsite_4' },
+					{ text: '露營區(六人)', value: 'Campsite_6' },
+					{ text: '豪華露營(二人)', value: 'Glamping_2' },
+					{ text: '豪華露營(四人)', value: 'Glamping_4' },
+					{ text: '豪華露營(六人)', value: 'Glamping_6' }
+				]
+			},
+			methods: {
+				up: function (a) {
+					//console.log(a);
+					//console.log(a.target.files[0]);
+					var input = a.target;
+					var count = input.files.length;
+					var index = 0;
+					if (input.files) {
 						while (count--) {
 							if (this.picture.preview_list.length < 6) {
 								var reader = new FileReader();
@@ -116,7 +197,9 @@
 							}
 						}
 
-					}				},
+					}
+
+				},
 				deletepreviewpic: function (a) {
 
 					this.picture.preview_list.splice(a, 1);
@@ -124,6 +207,58 @@
 					//window.location.reload();
 
 
-				},				send: function () {					if (this.picture.preview_list.length < 3) {						$('#myModal').modal('show');
-					}					else {						var bodyFormData = new FormData();						bodyFormData.append("Name", this.hello.name);						bodyFormData.append("Price_Of_Weekdays", this.hello.priceofweekdays);						bodyFormData.append("Price_Of_Weekends", this.hello.priceofweekends);						bodyFormData.append("Description", this.hello.description);						bodyFormData.append("RoomType", this.selected);						bodyFormData.append("Count", this.count);						for (let index = 0; index < this.picture.image_list.length; index++) {							bodyFormData.append("Path", this.picture.image_list[index]);						}						//let urlParams = new URLSearchParams(window.location.search);						//console.log(urlParams.get('id')); // "abc"						//let id = urlParams.get('id');						axios({							method: "post",							url: "/Create_Room/Room_IntoDB",							data: bodyFormData,							headers: { "Content-Type": "multipart/form-data" },						})							.then(function (response) {								if (response.data == true) {									alert("success");									window.location.href = "/Camping_Information/CampingInformation"								}								else {									alert("失敗");								}								//	//handle success								//alert(response.data);								//window.location.href="https://localhost:5001/Create_Room/CreateRoom?id=" + response.data;							})							.catch(function (response) {								//handle error								console.log(response);							});
-					}									}			}		}	);</script>
+				},
+				send: function () {
+					if (this.picture.preview_list.length < 3) {
+						$('#myModal').modal('show');
+					}
+					else {
+						var bodyFormData = new FormData();
+
+						bodyFormData.append("Name", this.hello.name);
+						bodyFormData.append("Price_Of_Weekdays", this.hello.priceofweekdays);
+						bodyFormData.append("Price_Of_Weekends", this.hello.priceofweekends);
+						bodyFormData.append("Description", this.hello.description);
+						bodyFormData.append("RoomType", this.selected);
+						bodyFormData.append("Count", this.count);
+
+
+						for (let index = 0; index < this.picture.image_list.length; index++) {
+							bodyFormData.append("Path", this.picture.image_list[index]);
+						}
+
+						//let urlParams = new URLSearchParams(window.location.search);
+						//console.log(urlParams.get('id')); // "abc"
+						//let id = urlParams.get('id');
+						axios({
+							method: "post",
+							url: "/Create_Room/Room_IntoDB",
+							data: bodyFormData,
+							headers: { "Content-Type": "multipart/form-data" },
+						})
+							.then(function (response) {
+								if (response.data == true) {
+									alert("success");
+									window.location.href = "/Camping_Information/CampingInformation"
+								}
+								else {
+									alert("失敗");
+								}
+								//	//handle success
+								//alert(response.data);
+								//window.location.href="https://localhost:5001/Create_Room/CreateRoom?id=" + response.data;
+							})
+							.catch(function (response) {
+								//handle error
+								console.log(response);
+							});
+					}
+
+				}
+			}
+		}
+	);
+</script>
+
+
+

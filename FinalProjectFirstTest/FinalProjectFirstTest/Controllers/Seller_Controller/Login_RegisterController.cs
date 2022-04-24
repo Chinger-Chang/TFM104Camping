@@ -66,7 +66,7 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
             if (seller == null)
             {
                 //無此使用者
-                return Json(Url.Action("LoginRegister", "Login_Register"));
+                return BadRequest("400");
             }
             else
             {
@@ -81,9 +81,17 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
                     {
                         new Claim(ClaimTypes.Name,seller.Name),
                         new Claim(ClaimTypes.Email,seller.Email),
-                        new Claim(ClaimTypes.Role,"Seller"),
                         new Claim("Seller_Id",seller.Id.ToString())
                     };
+                    if(seller.Email == "tfm104manager@gmail.com")
+					{
+                        claims.Add(new Claim(ClaimTypes.Role, "Manager"));
+                    }
+					else
+					{
+                        claims.Add(new Claim(ClaimTypes.Role, "Seller"));
+					}
+                    
                     var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var claimPrincipal = new ClaimsPrincipal(claimIdentity);
                     await HttpContext.SignInAsync(claimPrincipal);
@@ -92,7 +100,7 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
                 else
                 {
                     //有此使用者 但密碼錯誤
-                    return Json(Url.Action("LoginRegister", "Login_Register"));
+                    return BadRequest("401");
                 }
             }
         }

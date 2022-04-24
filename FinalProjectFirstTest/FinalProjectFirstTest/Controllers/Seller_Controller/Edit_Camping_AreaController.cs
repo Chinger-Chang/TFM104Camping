@@ -59,8 +59,9 @@ namespace CampingAreaTest330.Controllers
 					Power_Supply = service.Power_Supply,
 					Outdoor_Tables_Chairs = service.Outdoor_Tables_Chairs,
 					Canteen = service.Canteen,
+					Mattress = service.Mattress,
 					No_Equipment = service.No_Equipment,
-					Mattress = service.Mattress
+					IsCancel= service.IsCancel
 				}).FirstOrDefault()
 			};
 			return mydata;
@@ -114,6 +115,12 @@ namespace CampingAreaTest330.Controllers
 							//還沒載完會卡住所以要copy
 							file[index].CopyTo(fs);
 						}
+						_db.Camping_Area_Pictures.Add(new Camping_Area_Picture()
+						{
+							Camping_AreaId = Convert.ToInt32(r),
+							Path = fileName,
+							UpdateTime = DateTime.Now
+						});
 					}
 				}
 				_db.SaveChanges();

@@ -23,7 +23,7 @@
 	@*vue axios*@
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.js' integrity='sha512-Kg0CewqPNO/ziOJuCq5eyl3P/V6OLz/Lb1I2m+yKS3lHZcGVFN/KOew18rWP+kTsL7haYdaqGjwHQCZrN0heLQ==' crossorigin='anonymous'></script>
-	@{ if (!User.IsInRole("Seller") || !User.IsInRole("Admin"))
+	@{ if (!User.IsInRole("Seller") || !User.IsInRole("Manager"))
 		{
 			@*vuetify*@
 			<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
@@ -167,7 +167,7 @@
 								}
 								<!-- #endregion -->
 								<!-- #region Admin Nav -->
-								if (User.IsInRole("Admin"))
+								if (User.IsInRole("Manager"))
 								{
 									<li class="nav-item">
 										<a class="nav-link text-white" asp-area="" asp-controller="Manager" asp-action="ManagerOrderDetails">管理員訂單管理</a>
