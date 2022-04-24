@@ -111,7 +111,7 @@ var a = new Vue({
 								ev.push({
 									title: "剩" + self.getremaining_amount[index] + "間",
 									start: `${s}`,
-									color:'#D4D2D2'
+									color:'#84F5E6'
 								});
 							}
 							
@@ -122,11 +122,11 @@ var a = new Vue({
 
 					})
 					if (a != 0) {
-						ev.push({
-							title: "未有人訂購",
-							start: `${s}`,
-							textColor: 'black'
-						});
+						//ev.push({
+						//	title: "未有人訂購",
+						//	start: `${s}`,
+						//	textColor: 'black'
+						//});
 						ev.push({
 							title: "剩" + self.totalamount + "間",
 							start: `${s}`,

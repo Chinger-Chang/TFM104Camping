@@ -95,7 +95,15 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
                     var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                     var claimPrincipal = new ClaimsPrincipal(claimIdentity);
                     await HttpContext.SignInAsync(claimPrincipal);
-                    return Json(Url.Action("Seller_OrderDetail", "Order_Detail"));
+                    if (seller.Email == "tfm104manager@gmail.com")
+                    {
+                        return Json(Url.Action("ManagerOrderDetails", "Manager"));
+                    }
+					else
+					{
+                        return Json(Url.Action("Seller_OrderDetail", "Order_Detail"));
+					}
+                    
 				    }
                 else
                 {
