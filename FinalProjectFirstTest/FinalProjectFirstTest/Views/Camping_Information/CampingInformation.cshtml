@@ -41,6 +41,7 @@
 			<div class="text-center my-5">
 				<label for="selected" class="form-label">選擇露營區:</label>
 				<select v-model="selected" v-on:change="getmore">
+					<option value="" disabled selected>選擇露營區</option>
 					<option v-for="n in nameList" v-bind:value="n.id">{{ n.name }}</option>
 				</select>
 			</div>
@@ -163,25 +164,71 @@
 					},
 					deletecamping: function (a) {
 						var self = this;
-						axios.post("/Camping_Information/DeleteCamping/" + self.productList.camping_AreaId).then(function (res) {
-							if (res.data == true) {
-								alert("刪成功!!!")
-								window.location.reload();
-							}
-							else {
-								alert("刪失敗!!!")
+						Swal.fire({
+							title: '確定取消???',
+							icon: 'warning',
+							background: "black",
+							color: "white",
+							text: '取消露營區跟房間都會刪除喔!!!',
+							showCancelButton: true,
+							cancelButtonColor: '#B9C0CE',
+							confirmButtonText: '確定!!!',
+							confirmButtonColor: 'red',
+							preConfirm: () => {
+								axios.post("/Camping_Information/DeleteCamping/" + self.productList.camping_AreaId).then(function (res) {
+									if (res.data == true) {
+										Swal.fire({
+											title: '取消成功~',
+											background: "black",
+											color: "white",
+											preConfirm: () => {
+												window.location.reload();
+											}
+										});
+									}
+									else {
+										Swal.fire({
+											title: '取消失敗!',
+											background: "black",
+											color: "white",
+										})
+									}
+								});
 							}
 						});
 					},
 					deleteroom: function (a) {
 						var self = this;
-						axios.post("/Camping_Information/DeleteRoom/" + self.productList.myrooms[a].roomId).then(function (res) {
-							if (res.data == true) {
-								alert("刪成功!!!")
-								window.location.reload();
-							}
-							else {
-								alert("刪失敗!!!")
+						Swal.fire({
+							title: '確定取消???',
+							icon: 'warning',
+							background: "black",
+							color: "white",
+							text: '取消就沒了喔~',
+							showCancelButton: true,
+							cancelButtonColor: '#B9C0CE',
+							confirmButtonText: '確定!!!',
+							confirmButtonColor: 'red',
+							preConfirm: () => {
+								axios.post("/Camping_Information/DeleteRoom/" + self.productList.myrooms[a].roomId).then(function (res) {
+									if (res.data == true) {
+										Swal.fire({
+											title: '取消成功~',
+											background: "black",
+											color: "white",
+											preConfirm: () => {
+												window.location.reload();
+											}
+										});
+									}
+									else {
+										Swal.fire({
+											title: '取消失敗!',
+											background: "black",
+											color: "white",
+										})
+									}
+								});
 							}
 						});
 					}, 
@@ -202,7 +249,12 @@
 						console.log("111" + self.selected);
 						axios.get("/Camping_Information/GetAllInformation/" + self.selected).then(function (res) {
 							if (res.data == false) {
-								alert("!!!");
+								Swal.fire({
+									title: '剛註冊嗎？還沒有露營區喔~',
+									text:'請點選左上角新增露營區',
+									background: "black",
+									color: "white"
+								});
 							}
 							else {
 								self.productList = res.data;
@@ -214,15 +266,6 @@
 					});
 					
 					}
-					//getfirst: function () {
-					//	var self = this;
-					//	axios.get("/Camping_Information/GetFirstInformation/").then(function (res) {
-					//		self.productList = res.data;
-					//		console.log(self.productList);
-					//		self.number = self.productList.roomName.length;
-					//	})
-					//}
-				//}
 			});
 		</script>
 

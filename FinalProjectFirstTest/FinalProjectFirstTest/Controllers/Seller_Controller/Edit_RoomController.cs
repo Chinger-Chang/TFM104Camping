@@ -1,6 +1,7 @@
 ﻿using FinalProjectFirstTest.Models;
 using FinalProjectFirstTest.Seller_ViewModel.Create_Room;
 using FinalProjectFirstTest.Seller_ViewModel.Edit_Room;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@ namespace CampingAreaTest330.Controllers
 			_db = db;
 		}
 
+		[Authorize(Roles = "Seller")]
 		[Route("[controller]/[action]/{id}")]
 		public IActionResult EditRoom([FromRoute] int id)
 		{

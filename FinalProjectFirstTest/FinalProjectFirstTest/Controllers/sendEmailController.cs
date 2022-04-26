@@ -27,7 +27,7 @@ namespace FinalProjectFirstTest.Controllers
         {
             // 寄給誰
             var mails = new string[] { model.Email };
-
+            dynamic thisUser;
             // res為(亂數+字元)生成的新密碼
             var randomPassword = new RNGCryptoServiceProvider();
             var bytesarray = new byte[55 / 8];
@@ -36,7 +36,14 @@ namespace FinalProjectFirstTest.Controllers
             Console.WriteLine(res);
 
             // 新密碼加鹽雜湊存進此user密碼欄位
-            var thisUser = _db.Users.FirstOrDefault(x => x.Email == model.Email);
+            if (User.IsInRole("User"))
+			{
+                thisUser = _db.Users.FirstOrDefault(x => x.Email == model.Email);
+            }
+            else
+			{
+                thisUser = _db.Sellers.FirstOrDefault(x => x.Email == model.Email);
+            }
             var thisUserSalt = thisUser.Salt;
             byte[] passwordAndSaltBytes = System.Text.Encoding.UTF8.GetBytes(res + thisUserSalt);
             byte[] hashBytes = new System.Security.Cryptography.SHA256Managed().ComputeHash(passwordAndSaltBytes);
@@ -69,7 +76,7 @@ namespace FinalProjectFirstTest.Controllers
 
             public bool Send()
             {
-                client.Credentials = new System.Net.NetworkCredential("tfm10405@gmail.com", "aA870211");
+                client.Credentials = new System.Net.NetworkCredential("tfm104Camping@gmail.com", "ejaskltxfifavthk");
                 client.EnableSsl = true;
                 client.Send(mail);
                 return true;
@@ -79,7 +86,7 @@ namespace FinalProjectFirstTest.Controllers
             {
                 var mail = new MailMessage();
                 mail.IsBodyHtml = true;
-                mail.From = new MailAddress("tfm10405@gmail.com");
+                mail.From = new MailAddress("tfm104Camping@gmail.com");
                 foreach (var item in to)
                 {
                     mail.To.Add(item);
@@ -114,8 +121,17 @@ namespace FinalProjectFirstTest.Controllers
             string[] sArray = userMail.Split("&");
             string mailString = sArray[0];
             var mail = mailString;
+            dynamic x;
 
-            var x = _db.Users.Where(x => x.Email == mail).FirstOrDefault();
+            if (User.IsInRole("User"))
+            {
+                x = _db.Users.Where(x => x.Email == mail).FirstOrDefault();
+            }
+            else
+            {
+                x = _db.Sellers.Where(x => x.Email == mail).FirstOrDefault();
+            }
+           
             if (x != null)
             {
                 x.IsMailConfirm = true;
@@ -128,6 +144,7 @@ namespace FinalProjectFirstTest.Controllers
         {
             try
             {
+                str = str.Replace(' ', '+');
                 byte[] key = Encoding.Unicode.GetBytes(encryptKey); // 密鑰
                 byte[] data = Convert.FromBase64String(str); // 待解密字符串
 
@@ -143,13 +160,13 @@ namespace FinalProjectFirstTest.Controllers
                 MStream.Close(); // 關閉內存流
 
                 return Encoding.Unicode.GetString(temp); // 返回解密後的字符串
-            }
-            catch
-            {
-                return str;
-            }
-        }
-        private string Encrypt(string str) // 加密字符串
+		}
+				catch
+				{
+				    return str;
+				}
+}
+		private string Encrypt(string str) // 加密字符串
         {
             try
             {

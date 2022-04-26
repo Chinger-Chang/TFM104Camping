@@ -39,6 +39,7 @@ namespace FinalProjectFirstTest
 				.AddCookie(opt =>
 			{
 				opt.LoginPath = new PathString("/Login_Register/LoginRegister");
+
 			}).AddFacebook(opt =>
 			{
 				opt.AppId = "1077243449672588";

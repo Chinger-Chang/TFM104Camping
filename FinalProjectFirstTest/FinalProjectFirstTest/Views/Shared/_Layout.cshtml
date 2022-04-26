@@ -34,6 +34,11 @@
 			<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
 		}
 	}
+	@*sweetalert*@
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.9/dist/sweetalert2.all.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.9/dist/sweetalert2.all.min.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.9/dist/sweetalert2.css">
+
 	<!-- #endregion -->
 	<!-- #region Zhong 0416-->
 	<!--cdn jq-->
@@ -62,17 +67,17 @@
 
 
 
-		@@media (max-width: 500px) and (min-width: 200px) {
-			header {
-				position: fixed;
-				width: 100%;
-			}
+			@@media (max-width: 500px) and (min-width: 200px) {
+				header {
+					position: fixed;
+					width: 100%;
+				}
 
-			* {
-				font-size: 20px !important;
+				* {
+					font-size: 20px !important;
+				}
 			}
-		}
-	</style>*@
+		</style>*@
 	<!-- #endregion -->
 </head>
 <body>
@@ -84,7 +89,7 @@
 				if (User.IsInRole("Seller"))
 				{
 					<div class="container">
-						<a class="navbar-brand" asp-area="" asp-controller="OrderDetail" asp-action="Seller_OrderDetail">賣家</a>
+						<a class="navbar-brand" asp-area="" asp-controller="Order_Detail" asp-action="Seller_OrderDetail">賣家</a>
 						<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
 								aria-expanded="false" aria-label="Toggle navigation">
 							<span class="navbar-toggler-icon"></span>
@@ -178,19 +183,19 @@
 								if (User.IsInRole("Seller"))
 								{
 									<li class="nav-item">
-										<a class="nav-link text-white" asp-area="" asp-controller="Create_Camping_Area" asp-action="CampingArea">建露營區</a>
+										<a class="nav-link text-white" asp-area="" asp-controller="Order_Detail" asp-action="Seller_OrderDetail">訂單管理</a>
 									</li>
 									<li class="nav-item">
-										<a class="nav-link text-white" asp-area="" asp-controller="Create_Room" asp-action="CreateRoom">建房型</a>
+										<a class="nav-link text-white" asp-area="" asp-controller="Create_Camping_Area" asp-action="CampingArea">建露營區</a>
 									</li>
 									<li class="nav-item">
 										<a class="nav-link text-white" asp-area="" asp-controller="Camping_Information" asp-action="CampingInformation">露營區/房型</a>
 									</li>
 									<li class="nav-item">
-										<a class="nav-link text-white" asp-area="" asp-controller="Order_Detail" asp-action="Seller_OrderDetail">訂單管理</a>
+										<a class="nav-link text-white" asp-area="" asp-controller="Room_Condition" asp-action="RoomCondition">房況</a>
 									</li>
 									<li class="nav-item">
-										<a class="nav-link text-white" asp-area="" asp-controller="Room_Condition" asp-action="RoomCondition">房況</a>
+										<a class="nav-link text-white" asp-area="" asp-controller="Seller_Info" asp-action="SellerInfo">基本資料</a>
 									</li>
 								}
 								<!-- #endregion-->

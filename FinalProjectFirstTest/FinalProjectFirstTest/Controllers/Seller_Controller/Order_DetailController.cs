@@ -1,5 +1,6 @@
 ﻿using FinalProjectFirstTest.Models;
 using FinalProjectFirstTest.Seller_ViewModel.Order_Detail;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -18,6 +19,8 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
 		{
 			_db = db;
 		}
+
+		[Authorize(Roles = "Seller")]
 		public IActionResult Seller_OrderDetail()
 		{
 			return View();
@@ -25,12 +28,12 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
 
 		public List<OrderDetailViewModel> Get_Order_Details()
 		{
-			var seller = 2;
+			var sellerid = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == "Seller_Id").Value);
 			var sres = (from od in _db.OrderDetails.Where(w => w.Status != Status.Cancel && w.EndDate >= DateTime.Now)
 					 join r in _db.Rooms on od.RoomId equals r.Id
 					 join c in _db.Camping_Areas on r.Camping_AreaId equals c.Id
 					 join s in _db.Sellers on c.SellerId equals s.Id
-					 where s.Id == seller
+					 where s.Id == sellerid
 					 orderby od.CreateDate descending
 					 select new OrderDetailViewModel
 					 {
@@ -49,12 +52,12 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
 		}
 		public List<OrderDetailViewModel> Get_Cancel_Order_Details()
 		{
-			var seller = 2;
+			var sellerid = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == "Seller_Id").Value);
 			var sres = (from od in _db.OrderDetails.Where(w => w.Status == Status.Cancel || w.EndDate < DateTime.Now)
 					 join r in _db.Rooms on od.RoomId equals r.Id
 					 join c in _db.Camping_Areas on r.Camping_AreaId equals c.Id 
 					 join s in _db.Sellers on c.SellerId equals s.Id
-					 where s.Id == seller
+					 where s.Id == sellerid
 					 orderby od.CreateDate descending
 					 select new OrderDetailViewModel
 					 {

@@ -1,5 +1,6 @@
 ﻿using FinalProjectFirstTest.Models;
 using FinalProjectFirstTest.Seller_ViewModel.Camping_Information;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,6 +18,8 @@ namespace CampingAreaTest330.Controllers
 		{
 			_db = db;
 		}
+
+		[Authorize(Roles = "Seller")]
 		public IActionResult CampingInformation()
 		{
 			return View();

@@ -1,6 +1,7 @@
 ﻿using FinalProjectFirstTest.Models;
 using FinalProjectFirstTest.Seller_ViewModel.Create_Camping_Area;
 using FinalProjectFirstTest.Seller_ViewModel.Edit_Camping_Area;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,8 @@ namespace CampingAreaTest330.Controllers
 			_environment = environment;
 			_db = db;
 		}
+
+		[Authorize(Roles = "Seller")]
 		public IActionResult EditCamping_Area()
 		{
 			return View();

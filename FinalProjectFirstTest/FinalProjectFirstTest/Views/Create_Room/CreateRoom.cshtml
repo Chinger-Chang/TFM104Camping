@@ -210,7 +210,14 @@
 				},
 				send: function () {
 					if (this.picture.preview_list.length < 3) {
-						$('#myModal').modal('show');
+						Swal.fire({
+							background: 'black',
+							color: 'white',
+							icon: 'warning',
+							title: '照片少於三張!!!',
+							confirmButtonColor: '#3C6ECF',
+							confirmButtonText: '去加~',
+						});
 					}
 					else {
 						var bodyFormData = new FormData();
@@ -238,11 +245,11 @@
 						})
 							.then(function (response) {
 								if (response.data == true) {
-									alert("success");
+									/*alert("success");*/
 									window.location.href = "/Camping_Information/CampingInformation"
 								}
 								else {
-									alert("失敗");
+									/*alert("失敗");*/
 								}
 								//	//handle success
 								//alert(response.data);

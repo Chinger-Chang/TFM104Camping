@@ -1,5 +1,4 @@
 ﻿<link rel="stylesheet" href="~/css/loginregister.css" />
-
 <div id="hey">
 	<section class="forms-section" id="">
 		<div class="forms">
@@ -28,7 +27,7 @@
 					</fieldset>
 					<div class="" style="display:flex;justify-content:center;">
 						<div class="" style="position: relative; top:2.6rem">
-							<a class="" style="" data-toggle="modal" data-target="#exampleModal">忘記密碼</a>
+							<a href="#"  style="color:black;" v-on:click="forgetpassword">忘記密碼</a>
 							<a class="bi bi-question"></a>
 						</div>
 						<button type="submit" class="btn-login">登入</button>
@@ -55,6 +54,9 @@
 							<label for="signup-email">帳號(email)</label>
 
 							<input id="signup-email" type="email" required v-model="email" v-on:blur="emailCheck">
+							<div v-show="isEmail">
+								Email格式錯誤
+							</div>
 						</div>
 						<div class="input-block">
 							<i class="bi bi-lock"></i>
@@ -75,7 +77,7 @@
 
 							<label for="signup-phone">手機</label>
 
-							<input id="signup-phone" type="tel" required v-model="phone">
+							<input id="signup-phone" type="tel" placeholder="0123-445-678" pattern="[0-9]{4}-[0-9]{3}-[0-9]{3}" required v-model="phone">
 						</div>
 					</fieldset>
 					<div class="">
@@ -96,7 +98,8 @@
 			name: '',
 			phone: '',
 			loginemail: '',
-			loginpassword: ''
+			loginpassword: '',
+			isEmail:false
 		},
 		methods: {
 			emailCheck: function () {
@@ -128,11 +131,35 @@
 				})
 					.then(function (response) {
 						if (response.data == true) {
+							axios({
+								method: 'post',
+								url: '/sendEmail/GetEmail',
+								//API要求的資料
+								data: data,
+								headers: { "Content-Type": 'multipart/form-data' }
+							})
+								.then(function (response) {
+									Swal.fire({
+										background: 'white',
+										color: 'black',
+										icon: 'success',
+										title: 'Yeah!!!',
+										text: '註冊成功!驗證信已寄出~',
+										confirmButtonColor: '#3C6ECF',
+										confirmButtonText: '前往驗證',
+									});
+								})
 							
-							alert("註冊成功");
 						} else {
-							
-							alert("註冊失敗");
+							Swal.fire({
+								background: 'white',
+								color: 'black',
+								icon: 'error',
+								title: 'Oops...',
+								text: '註冊失敗~已有此帳號',
+								confirmButtonColor: '#3C6ECF',
+								confirmButtonText: '重新來過',
+							});
 						}
 
 					})
@@ -159,13 +186,102 @@
 					headers: { "Content-Type": 'multipart/form-data' }
 				})
 					.then(function (response) {
-						alert(response.data);
-						window.location.href = response.data
+						if (response.data === 400) {
+							Swal.fire({
+								background: 'white',
+								color: 'black',
+								icon: 'error',
+								title: 'Oops...',
+								text: '沒有此使用者喔~是不是帳號錯了~',
+								confirmButtonColor: '#3C6ECF',
+								confirmButtonText: '重打!',
+							});
+						}
+						else if (response.data === 401) {
+							Swal.fire({
+								background: 'white',
+								color: 'black',
+								icon: 'error',
+								title: 'Oops...',
+								text: '密碼錯了喔~',
+								confirmButtonColor: '#3C6ECF',
+								confirmButtonText: '重打!',
+							});
+						}
+						else if (response.data === 402) {
+							Swal.fire({
+								background: 'white',
+								color: 'black',
+								icon: 'error',
+								title: 'oops...',
+								text: '信箱還沒驗證喔',
+								confirmButtonColor: '#3c6ecf',
+								confirmButtonText: '寄驗證信',
+								preConfirm: () => {
+
+									axios({
+										method: 'post',
+										url: '/sendEmail/GetEmail',
+										//API要求的資料
+										data: data,
+										headers: { "Content-Type": 'multipart/form-data' }
+									})
+													.then(function (response) {
+														swal.fire({
+															background: 'white',
+															color: 'black',
+															icon: 'success',
+															title: 'yeah!!!',
+															text: '驗證信已寄出~',
+															confirmbuttoncolor: '#3c6ecf',
+															confirmbuttontext: '前往驗證',
+														});
+													})
+
+											}
+							});
+						}
+						else {
+								window.location.href = response.data;
+						}
+						
 					})
 					.catch(function (response) {
-						/*if (response.data === )*/
-						window.location.href = response.data
+						alert(response.data);
+						
 					});
+			},
+			forgetpassword: function(){
+				Swal.fire({
+					background: 'white',
+					color: 'black',
+					text: '請輸入信箱',
+					input:'text',
+					confirmButtonColor: '#3c6ecf',
+					confirmButtonText: '寄信',
+					preConfirm: () => {
+						var email = document.querySelector('.swal2-input').value;
+						console.log(email);
+						axios({
+							method: 'post',
+							url: '/sendEmail/forgetPassword',
+							//API要求的資料
+							data: { Email: email},
+							headers:  { "Content-Type": 'application/json' }
+						})
+							.then(function (response) {
+								swal.fire({
+									background: 'white',
+									color: 'black',
+									icon: 'success',
+									text: '驗證信已寄出~',
+									confirmbuttoncolor: '#3c6ecf',
+									confirmbuttontext: '前往驗證',
+								});
+							})
+
+					}
+				});
 			}
 		}
 	});
