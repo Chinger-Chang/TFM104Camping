@@ -13,7 +13,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FinalProjectFirstTest.Controllers
-{
+{//
     public class BuyerController : Controller
     {
         private readonly IWebHostEnvironment _environment;

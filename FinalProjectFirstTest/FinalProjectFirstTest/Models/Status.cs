@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace FinalProjectFirstTest.Models
-{
+{//
 	public enum Status
 	{
         [Display(Name = "付款中")]
