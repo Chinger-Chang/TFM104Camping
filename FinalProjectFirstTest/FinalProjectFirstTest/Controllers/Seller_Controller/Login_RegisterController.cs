@@ -66,7 +66,7 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
             if (seller == null)
             {
                 //無此使用者
-                return BadRequest("400");
+                return Ok("400");
             }
             else
             {
@@ -74,42 +74,50 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
                 byte[] passwordAndSaltBytes = System.Text.Encoding.UTF8.GetBytes(model.Password + salt);
                 byte[] hashBytes = new System.Security.Cryptography.SHA256Managed().ComputeHash(passwordAndSaltBytes);
                 string hashString = Convert.ToBase64String(hashBytes);
-
-                if(seller.Password == hashString)
+                if(seller.IsMailConfirm!=false)
 				{
-                    var claims = new List<Claim>()
+                    if (seller.Password == hashString)
+                    {
+                        var claims = new List<Claim>()
                     {
                         new Claim(ClaimTypes.Name,seller.Name),
                         new Claim(ClaimTypes.Email,seller.Email),
                         new Claim("Seller_Id",seller.Id.ToString())
                     };
-                    if(seller.Email == "tfm104manager@gmail.com")
-					{
-                        claims.Add(new Claim(ClaimTypes.Role, "Manager"));
+                        if (seller.Email == "tfm104manager@gmail.com")
+                        {
+                            claims.Add(new Claim(ClaimTypes.Role, "Manager"));
+                        }
+                        else
+                        {
+                            claims.Add(new Claim(ClaimTypes.Role, "Seller"));
+                        }
+
+                        var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                        var claimPrincipal = new ClaimsPrincipal(claimIdentity);
+                        await HttpContext.SignInAsync(claimPrincipal);
+                        if (seller.Email == "tfm104manager@gmail.com")
+                        {
+                            return Json(Url.Action("ManagerOrderDetails", "Manager"));
+                        }
+                        else
+                        {
+                            return Json(Url.Action("Seller_OrderDetail", "Order_Detail"));
+                        }
+
                     }
-					else
-					{
-                        claims.Add(new Claim(ClaimTypes.Role, "Seller"));
-					}
-                    
-                    var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var claimPrincipal = new ClaimsPrincipal(claimIdentity);
-                    await HttpContext.SignInAsync(claimPrincipal);
-                    if (seller.Email == "tfm104manager@gmail.com")
+                    else
                     {
-                        return Json(Url.Action("ManagerOrderDetails", "Manager"));
+                        //有此使用者 但密碼錯誤
+                        return Ok("401");
                     }
-					else
-					{
-                        return Json(Url.Action("Seller_OrderDetail", "Order_Detail"));
-					}
-                    
-				    }
-                else
-                {
-                    //有此使用者 但密碼錯誤
-                    return BadRequest("401");
+
                 }
+				else
+				{
+                    return Ok("402");
+                }
+                
             }
         }
 
@@ -125,7 +133,6 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
         public async Task<IActionResult> Facebook_ResponseAsync()
         {
             string email = "";
-            string name = "";
             var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             var data = response.Principal.Claims.Select(x => new
             {
@@ -141,10 +148,6 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
                 {
                     email = item.Value;
                 }
-                else if(item.Type.ToLower().Contains("name") && !item.Type.ToLower().Contains("givenname")&& !item.Type.ToLower().Contains("surname"))
-				{
-                    name = item.Value;
-                }
             }
 
             var seller = _db.Sellers.FirstOrDefault(x => x.Email == email);
@@ -154,18 +157,15 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
                 _db.Sellers.Add(new Seller()
                 {
                     Email = email,
-                    Name = name,
                     CreateDate = DateTime.Now,
                     IsMailConfirm = true
                 });
                 _db.SaveChanges();
             }
             Console.WriteLine(email);
-            Console.WriteLine(name);
 
             var claims = new List<Claim>()
                     {
-                        new Claim(ClaimTypes.Name,name),
                         new Claim(ClaimTypes.Email,email),
                         new Claim(ClaimTypes.Role,"Seller"),
 
@@ -210,12 +210,9 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
                 {
                     email = item.Value;
                 }
-                //else if (item.Type.ToLower().Contains("name") && !item.Type.ToLower().Contains("givenname") && !item.Type.ToLower().Contains("surname"))
-                //{
-                //    name = item.Value;
-                //}
-            }
+			}
 
+            
             var seller = _db.Sellers.FirstOrDefault(x => x.Email == email);
             if (seller == null)
             {
@@ -223,7 +220,6 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
                 _db.Sellers.Add(new Seller()
                 {
                     Email = email,
-                    Name = "Chinger",
                     CreateDate = DateTime.Now,
                     IsMailConfirm = true
                 });
@@ -234,10 +230,8 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
 
             var claims = new List<Claim>()
                     {
-                        //new Claim(ClaimTypes.Name,name),
                         new Claim(ClaimTypes.Email,email),
-                        new Claim(ClaimTypes.Role,"Seller"),
-
+                        new Claim(ClaimTypes.Role,"Seller")
                     };
 
             var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -245,9 +239,9 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
             await HttpContext.SignInAsync(claimPrincipal);
             //return RedirectToAction("login", "Account");
 
-            //return RedirectToAction("Seller_OrderDetail", "Order_Detail");
+            return RedirectToAction("Seller_OrderDetail", "Order_Detail");
 
-            return Json(claims);
+            //return Json(claims);
         }
 
         public async Task<IActionResult> Logout()

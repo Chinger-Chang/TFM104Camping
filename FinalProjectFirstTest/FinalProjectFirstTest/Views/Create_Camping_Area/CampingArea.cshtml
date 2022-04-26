@@ -312,45 +312,58 @@
 
 				},
 				send: function () {
-
-					var bodyFormData = new FormData();
-
-					bodyFormData.append("Name", this.hello.name);
-					bodyFormData.append("Phone", this.hello.phone);
-					bodyFormData.append("Region", this.selected);
-					bodyFormData.append("Address", this.hello.address);
-					bodyFormData.append("Description", this.hello.description);
-					var services = document.querySelectorAll('.checkbox');
-					for (let service of services) {
-						bodyFormData.append(`${service.id}`, service.checked)
-					}
-
-					for (let index = 0; index < this.picture.image_list.length; index++) {
-						bodyFormData.append("Path", this.picture.image_list[index]);
-					}
-
-					axios({
-						method: "post",
-						url: "/Create_Camping_Area/Camping_Area_IntoDB",
-						data: bodyFormData,
-						headers: { "Content-Type": "multipart/form-data" },
-					})
-						.then(function (response) {
-							if (response.data == true) {
-								alert("success");
-								window.location.href = "/Create_Room/CreateRoom";
-							}
-							else {
-								alert("失敗");
-							}
-							//	//handle success
-
-
-						})
-						.catch(function (response) {
-							//handle error
-							console.log(response);
+					if (this.picture.preview_list.length < 3) {
+						Swal.fire({
+							background: 'black',
+							color: 'white',
+							icon: 'warning',
+							title: '照片少於三張!!!',
+							confirmButtonColor: '#3C6ECF',
+							confirmButtonText: '去加~',
 						});
+					}
+					else
+					{
+						var bodyFormData = new FormData();
+
+						bodyFormData.append("Name", this.hello.name);
+						bodyFormData.append("Phone", this.hello.phone);
+						bodyFormData.append("Region", this.selected);
+						bodyFormData.append("Address", this.hello.address);
+						bodyFormData.append("Description", this.hello.description);
+						var services = document.querySelectorAll('.checkbox');
+						for (let service of services) {
+							bodyFormData.append(`${service.id}`, service.checked)
+						}
+
+						for (let index = 0; index < this.picture.image_list.length; index++) {
+							bodyFormData.append("Path", this.picture.image_list[index]);
+						}
+
+						axios({
+							method: "post",
+							url: "/Create_Camping_Area/Camping_Area_IntoDB",
+							data: bodyFormData,
+							headers: { "Content-Type": "multipart/form-data" },
+						})
+							.then(function (response) {
+								if (response.data == true) {
+									/*alert("success");*/
+									window.location.href = "/Create_Room/CreateRoom";
+								}
+								else {
+									/*alert("失敗");*/
+								}
+								//	//handle success
+
+
+							})
+							.catch(function (response) {
+								//handle error
+								console.log(response);
+							});
+					}
+					
 				}
 			}
 		}

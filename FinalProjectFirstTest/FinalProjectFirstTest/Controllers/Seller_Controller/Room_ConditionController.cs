@@ -1,4 +1,5 @@
 ﻿using FinalProjectFirstTest.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,8 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
 		{
 			_db = db;
 		}
+
+		[Authorize(Roles = "Seller")]
 		public IActionResult RoomCondition()
 		{
 			return View();
@@ -21,11 +24,11 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
 
 		public Get_Camping_AreaViewModel Get_Camping_Area()
 		{
-			int seller = 2;
+			var sellerid = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == "Seller_Id").Value);
 			var mydata = new Get_Camping_AreaViewModel
 			{
-				Camping_AreaId = _db.Camping_Areas.Where(w => w.SellerId == seller).Select(s => s.Id).ToList(),
-				Camping_Area_Name = _db.Camping_Areas.Where(w => w.SellerId == seller).Select(s => s.Name).ToList()
+				Camping_AreaId = _db.Camping_Areas.Where(w => w.SellerId == sellerid).Select(s => s.Id).ToList(),
+				Camping_Area_Name = _db.Camping_Areas.Where(w => w.SellerId == sellerid).Select(s => s.Name).ToList()
 			};
 			return mydata;
 		}
@@ -33,10 +36,10 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
 		[Route("[controller]/[action]/{id?}")]
 		public Get_RoomViewModel Get_Room([FromRoute] int? id)
 		{
-			int seller = 2;
+			var sellerid = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == "Seller_Id").Value);
 			if (id ==null)
 			{
-				var camp = _db.Camping_Areas.Where(w => w.SellerId == seller).Select(s => s.Id).FirstOrDefault();
+				var camp = _db.Camping_Areas.Where(w => w.SellerId == sellerid).Select(s => s.Id).FirstOrDefault();
 
 				var mydata = new Get_RoomViewModel
 				{
@@ -61,7 +64,6 @@ namespace FinalProjectFirstTest.Controllers.Seller_Controller
 		public Get_Room_Order_DetailsViewModel ListString([FromRoute] int id)
 		{
 			// 拿roomId
-			int rid =2;
 
 			var od = _db.OrderDetails.Where(x => x.RoomId == id && (x.Status == Status.Success || x.Status == Status.Refunding)).Select(x => new Get_Date
 			{
