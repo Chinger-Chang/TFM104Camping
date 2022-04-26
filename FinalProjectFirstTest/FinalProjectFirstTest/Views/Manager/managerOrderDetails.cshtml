@@ -76,7 +76,7 @@
 								<th scope="col">退房時間</th>
 								<th scope="col">價錢</th>
 								<th scope="col">狀態</th>
-								<th scope="col">取消時間</th>
+								<th scope="col">申請退款時間</th>
 								<th scope="col">確認中</th>
 							</tr>
 						</thead>
@@ -92,7 +92,12 @@
 								<td>{{y.checkInDate}}</td>
 								<td>{{y.checkOutDate}}</td>
 								<td>{{y.price}}</td>
-								<td>{{y.status}}</td>
+								<td>@*{{y.status}}*@
+                                    <v-chip v-if="y.status == '退款中'" class="ma-2"
+                                            color="#F06292" label text-color="white">
+                                        <v-icon left> mdi-chevron-double-right </v-icon> 退款中
+                                    </v-chip>
+								</td>
 								<td>{{y.cancelDate}}</td>
 								<td>
 									@*<button v-on:click="checkAndSend(y.mOrderDetailID)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#staticBackdrop">
@@ -139,7 +144,25 @@
 								<td>{{x.checkInDate}}</td>
 								<td>{{x.checkOutDate}}</td>
 								<td>{{x.price}}</td>
-								<td>{{x.status}}</td>
+                                <td>
+                                    @*{{x.status}}*@
+                                    <v-chip v-if="x.status == '付款失敗'" class="ma-2"
+                                            color="#8D6E63" label text-color="white">
+                                        <v-icon left> mdi-close-thick </v-icon> 付款失敗
+                                    </v-chip>
+                                    <v-chip v-if="x.status == '已付款'" class="ma-2"
+                                            color="#039BE5" label text-color="white">
+                                        <v-icon left> mdi-check-bold </v-icon> 已付款
+                                    </v-chip>
+                                    <v-chip v-if="x.status == '退款中'" class="ma-2"
+                                            color="#F06292" label text-color="white">
+                                        <v-icon left> mdi-chevron-double-right </v-icon> 退款中
+                                    </v-chip>
+                                    <v-chip v-if="x.status == '已取消'" class="ma-2"
+                                            color="#757575" label text-color="white">
+                                        <v-icon left> mdi-delete-empty </v-icon> 已取消
+                                    </v-chip>
+                                </td>
 							</tr>
 						</tbody>
 					</template>
@@ -208,8 +231,13 @@
                     .then(function (response) {
                         if (response.data == true) {
                             //alert("傳入成功");
-                            window.location.reload();
-
+                            //window.location.reload();
+                            axios.get("/Manager/GetReFundingOrderDetails").then(function (res) {
+                                self.ReOrderDetailsList = res.data;
+							}),
+                                axios.get("/Manager/GetAllOrderDetails").then(function (res) {
+                                    self.AllOrderDetailsList = res.data;
+                                })
                         } else {
                             alert("確認退款失敗");
                         }

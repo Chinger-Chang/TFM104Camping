@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace FinalProjectFirstTest.Models
-{//
+{
 	public enum Status
 	{
-        [Display(Name = "付款中")]
+        [Display(Name = "付款失敗")]
         Paying,
         [Display(Name = "已付款")]
         Success,

@@ -2,19 +2,39 @@
 <html>
 <head>
 	<style>
-		.a {
-			background-color: #E0E0E0;
+        .row {
+            justify-content: center
+        }
+        .a {
+            background-color: #E0E0E0;
+        }
+        body {
+            background-color: #212121;
+        }
+        .v-application--wrap {
+            background-color: #212121;
+        }
+
+		@@media (min-width: 1260px) {
+			.container {
+				max-width:600px;
+			}
 		}
+        @@media (min-width: 601px) and (max-width:960px) {
+            .container {
+                max-width: 600px;
+            }
+        }
 	</style>
 </head>
 <body>
 	<div id="mika">
 		<v-app>
 			<template>
-				<v-form class="a" v-model="valid">
-					<v-container>
+				<v-form class="a" v-model="valid" >
+					<v-container >
 						<v-row>
-							<v-col cols="12" md="4">
+							<v-col cols="12" md="12">
 								<v-text-field v-model="UsersList.id"
 											  @*:rules=""*@
 											  @*:counter="10"*@
@@ -23,7 +43,7 @@
 							</v-col>
 						</v-row>
 						<v-row>
-							<v-col cols="12" md="4">
+							<v-col cols="12" md="12">
 								<v-text-field v-model="UsersList.email"
 											  @*:rules="nameRules"*@
 											  @*:counter="10"*@
@@ -32,7 +52,7 @@
 							</v-col>
 						</v-row>
 						<v-row>
-							<v-col cols="12" md="4">
+							<v-col cols="12" md="12">
 								<v-text-field v-model="UsersList.name"
 											  :rules="nameRules"
 											  :counter="10"
@@ -41,7 +61,7 @@
 							</v-col>
 						</v-row>
 						<v-row>
-							<v-col cols="12" md="4">
+							<v-col cols="12" md="12">
 								<v-text-field v-model="UsersList.phone"
 											  :rules="PhoneRules"
 											  label="電話"
@@ -49,7 +69,7 @@
 							</v-col>
 						</v-row>
 						<v-row>
-							<v-col cols="12" md="4">
+							<v-col cols="12" md="12">
 								<div class="text-right">
 									<v-dialog v-model="dialog" width="500">
 										<template v-slot:activator="{ on, attrs }">

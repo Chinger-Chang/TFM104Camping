@@ -69,7 +69,7 @@ namespace FinalProjectFirstTest.Controllers
 
             public bool Send()
             {
-                client.Credentials = new System.Net.NetworkCredential("tfm10405@gmail.com", "aA870211");
+                client.Credentials = new System.Net.NetworkCredential("tfm10405@gmail.com", "tgvqdtruandccron");
                 client.EnableSsl = true;
                 client.Send(mail);
                 return true;
@@ -128,6 +128,7 @@ namespace FinalProjectFirstTest.Controllers
         {
             try
             {
+                str = str.Replace(' ', '+');
                 byte[] key = Encoding.Unicode.GetBytes(encryptKey); // 密鑰
                 byte[] data = Convert.FromBase64String(str); // 待解密字符串
 

@@ -69,7 +69,7 @@ namespace FinalProjectFirstTest.Controllers
                          CheckOutDate = od.EndDate.ToString("yyyy-MM-dd"),
                          Price = CalPrice.CalDaysPrice(od.StartDate, od.EndDate, r.Price_Of_Weekdays, r.Price_Of_Weekends),
                          Status = od.Status.GetType().GetMember(od.Status.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName(),
-                         CancelDate = od.CancelDate.HasValue ? od.CancelDate.Value.ToString("yyyy-MM-dd") : ""   // 問 Reds:)
+                         CancelDate = od.CancelDate.HasValue ? od.CancelDate.Value.ToString() : ""   // 問 Reds:)
                      }).ToList();
             return s;
         }

@@ -1,6 +1,8 @@
 ﻿using FinalProjectFirstTest.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +15,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace FinalProjectFirstTest.Controllers
-{//
+{
     public class BuyerController : Controller
     {
         private readonly IWebHostEnvironment _environment;
@@ -69,51 +71,102 @@ namespace FinalProjectFirstTest.Controllers
             string caid = HttpContext.Session.GetString("caid");
             int CAid = Convert.ToInt32(caid);
 
-            int userId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == "User_Id").Value);
+            var hasUserId = User.HasClaim(x => x.Type == "User_Id");
 
-            var camp = _db.Camping_Areas.Where(x => x.Id == CAid).FirstOrDefault();
-            var service = _db.Services.Where(x => x.Camping_AreaId == camp.Id).FirstOrDefault();
-
-            var userFavRoomId = _db.OrderDetails.Where(x => x.UserId == userId && x.Status == Status.Favority).Select(y => y.RoomId).ToList();
-
-            var s = new RoomInfoViewModel
+            if (hasUserId)
             {
-                UserFavRoomId = userFavRoomId,
-                CAId = camp.Id,
-                CAname = camp.Name,
-                CAaddress = camp.Address,
-                CAphone = camp.Phone,
-                CAdescription = camp.Description,
-                CApicPath = _db.Camping_Area_Pictures.Where(x => x.Camping_AreaId == camp.Id).Select(s => s.Path).ToList(),
-                Wifi = service.Wifi,
-                Breakfast = service.Breakfast,
-                Canopy = service.Canopy,
-                Canteen = service.Canteen,
-                Dinner = service.Dinner,
-                IsCancel = service.IsCancel,
-                Kitchen_Utensils = service.Kitchen_Utensils,
-                Lunch = service.Lunch,
-                Mattress = service.Mattress,
-                Night_Lighting = service.Night_Lighting,
-                No_Equipment = service.No_Equipment,
-                Outdoor_Tables_Chairs = service.Outdoor_Tables_Chairs,
-                Power_Supply = service.Power_Supply,
-                Public_Refrigerator = service.Public_Refrigerator,
-                Tent_Equipment = service.Tent_Equipment,
-                Rooms = _db.Rooms.Where(x => x.Camping_AreaId == camp.Id).Select(z => new Myroom
+                int userId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == "User_Id").Value);
+
+                var camp = _db.Camping_Areas.Where(x => x.Id == CAid).FirstOrDefault();
+                var service = _db.Services.Where(x => x.Camping_AreaId == camp.Id).FirstOrDefault();
+
+                var userFavRoomId = _db.OrderDetails.Where(x => x.UserId == userId && x.Status == Status.Favority).Select(y => y.RoomId).ToList();
+
+                var s = new RoomInfoViewModel
                 {
-                    UserId = userId, // 好像不需要傳userId
-                    RoomId = z.Id,
-                    RoomName = z.Name,
-                    //RoomType = r.RoomType.GetType().GetMember(r.RoomType.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName(),
-                    RoomType = z.RoomType.GetType().GetMember(z.RoomType.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName(),
-                    PriceOfWeekDay = z.Price_Of_Weekdays,
-                    Room_Path = _db.Room_Pictures.Where(y => y.RoomId == z.Id).Select(s => s.Path).ToList(),
-                    Room_Des = z.Description,
-                    RoomStatus = _db.OrderDetails.Where(n => n.UserId == userId && n.RoomId == z.Id && n.Status == Status.Favority).Select(c => c.Status.ToString()).FirstOrDefault()
-                }).ToList()
-            };
-            return s;
+                    UserFavRoomId = userFavRoomId,
+                    CAId = camp.Id,
+                    CAname = camp.Name,
+                    CAaddress = camp.Address,
+                    CAphone = camp.Phone,
+                    CAdescription = camp.Description,
+                    CApicPath = _db.Camping_Area_Pictures.Where(x => x.Camping_AreaId == camp.Id).Select(s => s.Path).ToList(),
+                    Wifi = service.Wifi,
+                    Breakfast = service.Breakfast,
+                    Canopy = service.Canopy,
+                    Canteen = service.Canteen,
+                    Dinner = service.Dinner,
+                    IsCancel = service.IsCancel,
+                    Kitchen_Utensils = service.Kitchen_Utensils,
+                    Lunch = service.Lunch,
+                    Mattress = service.Mattress,
+                    Night_Lighting = service.Night_Lighting,
+                    No_Equipment = service.No_Equipment,
+                    Outdoor_Tables_Chairs = service.Outdoor_Tables_Chairs,
+                    Power_Supply = service.Power_Supply,
+                    Public_Refrigerator = service.Public_Refrigerator,
+                    Tent_Equipment = service.Tent_Equipment,
+                    Rooms = _db.Rooms.Where(x => x.Camping_AreaId == camp.Id).Select(z => new Myroom
+                    {
+                        UserId = userId, // 好像不需要傳userId
+                        RoomId = z.Id,
+                        RoomName = z.Name,
+                        //RoomType = r.RoomType.GetType().GetMember(r.RoomType.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName(),
+                        RoomType = z.RoomType.GetType().GetMember(z.RoomType.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName(),
+                        PriceOfWeekDay = z.Price_Of_Weekdays,
+                        Room_Path = _db.Room_Pictures.Where(y => y.RoomId == z.Id).Select(s => s.Path).ToList(),
+                        Room_Des = z.Description,
+                        RoomStatus = _db.OrderDetails.Where(n => n.UserId == userId && n.RoomId == z.Id && n.Status == Status.Favority).Select(c => c.Status.ToString()).FirstOrDefault()
+                    }).ToList()
+                };
+                return s;
+            }
+            else
+            {
+                var camp = _db.Camping_Areas.Where(x => x.Id == CAid).FirstOrDefault();
+                var service = _db.Services.Where(x => x.Camping_AreaId == camp.Id).FirstOrDefault();
+
+                //var userFavRoomId = _db.OrderDetails.Where(x => x.UserId == userId && x.Status == Status.Favority).Select(y => y.RoomId).ToList();
+
+                var s = new RoomInfoViewModel
+                {
+                    //UserFavRoomId = userFavRoomId,
+                    CAId = camp.Id,
+                    CAname = camp.Name,
+                    CAaddress = camp.Address,
+                    CAphone = camp.Phone,
+                    CAdescription = camp.Description,
+                    CApicPath = _db.Camping_Area_Pictures.Where(x => x.Camping_AreaId == camp.Id).Select(s => s.Path).ToList(),
+                    Wifi = service.Wifi,
+                    Breakfast = service.Breakfast,
+                    Canopy = service.Canopy,
+                    Canteen = service.Canteen,
+                    Dinner = service.Dinner,
+                    IsCancel = service.IsCancel,
+                    Kitchen_Utensils = service.Kitchen_Utensils,
+                    Lunch = service.Lunch,
+                    Mattress = service.Mattress,
+                    Night_Lighting = service.Night_Lighting,
+                    No_Equipment = service.No_Equipment,
+                    Outdoor_Tables_Chairs = service.Outdoor_Tables_Chairs,
+                    Power_Supply = service.Power_Supply,
+                    Public_Refrigerator = service.Public_Refrigerator,
+                    Tent_Equipment = service.Tent_Equipment,
+                    Rooms = _db.Rooms.Where(x => x.Camping_AreaId == camp.Id).Select(z => new Myroom
+                    {
+                        //UserId = userId, // 好像不需要傳userId
+                        RoomId = z.Id,
+                        RoomName = z.Name,
+                        //RoomType = r.RoomType.GetType().GetMember(r.RoomType.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName(),
+                        RoomType = z.RoomType.GetType().GetMember(z.RoomType.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName(),
+                        PriceOfWeekDay = z.Price_Of_Weekdays,
+                        Room_Path = _db.Room_Pictures.Where(y => y.RoomId == z.Id).Select(s => s.Path).ToList(),
+                        Room_Des = z.Description,
+                        RoomStatus = "noUserId"
+                    }).ToList()
+                };
+                return s;
+            }
         }
         // 收藏
         [HttpPost]
@@ -148,6 +201,10 @@ namespace FinalProjectFirstTest.Controllers
         }
         // 買家 註冊+登入
         public IActionResult register()
+        {
+            return View();
+        }
+        public IActionResult LoginRegister()
         {
             return View();
         }
@@ -224,6 +281,149 @@ namespace FinalProjectFirstTest.Controllers
                     return Json(Url.Action("register", "Buyer"));
                 }
             }
+        }
+        public IActionResult Facebook_Login()
+        {
+            var fb = new AuthenticationProperties()
+            {
+                RedirectUri = Url.Action("Facebook_Response")
+            };
+            return Challenge(fb, FacebookDefaults.AuthenticationScheme);
+        }
+
+        public async Task<IActionResult> Facebook_ResponseAsync()
+        {
+            string email = "";
+            string name = "";
+            var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var data = response.Principal.Claims.Select(x => new
+            {
+                x.Type,
+                x.Value,
+                x.Issuer,
+                x.OriginalIssuer
+            });
+
+            foreach (var item in data)
+            {
+                if (item.Type.ToLower().Contains("emailaddress"))
+                {
+                    email = item.Value;
+                }
+                else if (item.Type.ToLower().Contains("name") && !item.Type.ToLower().Contains("givenname") && !item.Type.ToLower().Contains("surname"))
+                {
+                    name = item.Value;
+                }
+            }
+
+            var seller = _db.Sellers.FirstOrDefault(x => x.Email == email);
+            if (seller == null)
+            {
+                //此帳號可使用
+                _db.Sellers.Add(new Seller()
+                {
+                    Email = email,
+                    Name = name,
+                    CreateDate = DateTime.Now,
+                    IsMailConfirm = true
+                });
+                _db.SaveChanges();
+            }
+            Console.WriteLine(email);
+            Console.WriteLine(name);
+
+            var claims = new List<Claim>()
+                    {
+                        new Claim(ClaimTypes.Name,name),
+                        new Claim(ClaimTypes.Email,email),
+                        new Claim(ClaimTypes.Role,"Seller"),
+
+                    };
+
+            var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimPrincipal = new ClaimsPrincipal(claimIdentity);
+            await HttpContext.SignInAsync(claimPrincipal);
+            //return RedirectToAction("login", "Account");
+
+            return RedirectToAction("Seller_OrderDetail", "Order_Detail");
+        }
+
+        //[Route("google-login")]
+        public IActionResult Google_Login()
+        {
+            //跟Google拿資料
+            var properties = new AuthenticationProperties { RedirectUri = Url.Action("Google_Response") };
+
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+        }
+
+        //[Route("google-response")]
+        public async Task<IActionResult> Google_Response()
+        {
+            string email = "";
+            //拿回來的資料 做接收 並作為登入依據
+            var response = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            var data = response.Principal.Identities.FirstOrDefault()
+                .Claims.Select(claim => new
+                {
+                    claim.Issuer,
+                    claim.OriginalIssuer,
+                    claim.Type,
+                    claim.Value
+                });
+
+            foreach (var item in data)
+            {
+                if (item.Type.ToLower().Contains("emailaddress"))
+                {
+                    email = item.Value;
+                }
+                //else if (item.Type.ToLower().Contains("name") && !item.Type.ToLower().Contains("givenname") && !item.Type.ToLower().Contains("surname"))
+                //{
+                //    name = item.Value;
+                //}
+            }
+
+            var seller = _db.Sellers.FirstOrDefault(x => x.Email == email);
+            if (seller == null)
+            {
+                //此帳號可使用
+                _db.Sellers.Add(new Seller()
+                {
+                    Email = email,
+                    Name = "Chinger",
+                    CreateDate = DateTime.Now,
+                    IsMailConfirm = true
+                });
+                _db.SaveChanges();
+            }
+            Console.WriteLine(email);
+            //Console.WriteLine(name);
+
+            var claims = new List<Claim>()
+                    {
+                        //new Claim(ClaimTypes.Name,name),
+                        new Claim(ClaimTypes.Email,email),
+                        new Claim(ClaimTypes.Role,"Seller"),
+
+                    };
+
+            var claimIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var claimPrincipal = new ClaimsPrincipal(claimIdentity);
+            await HttpContext.SignInAsync(claimPrincipal);
+            //return RedirectToAction("login", "Account");
+
+            //return RedirectToAction("Seller_OrderDetail", "Order_Detail");
+
+            return Json(claims);
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
+
+            return RedirectToAction("Index", "Buyer");//導至登入頁
         }
         //--------------------------------------------------------------------------
         // 訂房
@@ -359,10 +559,10 @@ namespace FinalProjectFirstTest.Controllers
         {
             var userId = Int32.Parse(User.Claims.FirstOrDefault(x => x.Type == "User_Id").Value);
             //&& x.Status == Status.Success
-            var s = (from od in _db.OrderDetails.Where(x => x.UserId == userId && (x.Status == Status.Cancel || x.EndDate < DateTime.Now) && x.Status != Status.Favority)
+            var s = (from od in _db.OrderDetails.Where(x => x.UserId == userId && (x.Status == Status.Cancel || x.EndDate < DateTime.Now || x.Status == Status.Paying) && x.Status != Status.Favority)
                      join r in _db.Rooms on od.RoomId equals r.Id
                      join ca in _db.Camping_Areas on r.Camping_AreaId equals ca.Id
-                     orderby od.CancelDate descending
+                     orderby od.CreateDate descending
                      select new OrderDetailViewModel
                      {
                          OrderDetailId = od.Id,
@@ -394,6 +594,7 @@ namespace FinalProjectFirstTest.Controllers
                          RoomId = r.Id,
                          Name = od.Name,
                          Phone = od.Phone,
+                         CampingAreaId = ca.Id,
                          CampingAreaName = ca.Name,
                          RoomName = r.Name,
                          RoomType = r.RoomType.GetType().GetMember(r.RoomType.ToString()).First().GetCustomAttribute<DisplayAttribute>().GetName(),
@@ -414,6 +615,12 @@ namespace FinalProjectFirstTest.Controllers
             if (od != null && od.Status == Status.Success)
             {
                 od.Status = Status.Refunding;
+                od.CancelDate = DateTime.Now;
+                _db.SaveChanges();
+                return true;
+            }else if(od != null && od.Status == Status.Paying)
+            {
+                _db.OrderDetails.Remove(od);
                 _db.SaveChanges();
                 return true;
             }
@@ -496,6 +703,7 @@ namespace FinalProjectFirstTest.Controllers
             public int RoomId { get; set; }
             public string Name { get; set; }
             public string Phone { get; set; }
+            public int CampingAreaId { get; set; }
             public string CampingAreaName { get; set; }
             public string RoomName { get; set; }
             public string RoomType { get; set; }
